@@ -9,8 +9,8 @@ class Bank:
 class Users(Bank):
     account_number = 1000 
 
-    def __init__(self, bankBalance, name, email, address, type, accountNo) -> None:
-        super().__init__(bankBalance)
+    def __init__(self, name, email, address, type) -> None:
+        super().__init__()
         self.name = name
         self.email = email
         self.address = address
@@ -30,7 +30,7 @@ class Users(Bank):
         if amount>0:
             self.balance += amount
             
-            self.totalBankBalance += amount
+            Bank.totalBankBalance += amount
             self.loanTransaction.append({"type": "deposit", "amount": amount})
             print(f"\nDeposited ${amount}. New balance: ${self.balance}")
         else:
@@ -89,3 +89,62 @@ class Users(Bank):
                 print(f"Transferred ${amount} to account {accountNo}.")
             else:
                 print("Account does not exist.")
+
+
+class Admin(Bank):
+    def createAccount(self, name, email, address):
+        self.name = name
+        self.email = email
+        self.address = address
+
+        Users.accounts.append(self)
+          
+
+    def deleteUserAccount(self, accountNo):
+        for user in Bank.accounts:
+            if user.accountNo == accountNo:
+                Bank.accounts.remove(accountNo)
+                print(f'Successfully delete')
+
+            else:
+                print("Account does not exist")
+
+
+    def showAllUsersAccountList(self):
+        for user in Bank.accounts:
+            print(f'Name: {user.name}')
+            print(f'Email: {user.email}')
+            print(f'Address: {user.address}')
+            # print(f'Account No: {user.accountNo}')
+
+    def checkTotalAvailableBalanceInBank(self):
+        print(f'Total available balance in Bank: {Bank.totalBankBalance}')
+
+    def totalLoanAmountFromBank(self):
+        loanAmount = 0
+        for user in Users.accounts:
+            for transaction in user.loanTransaction:
+                if transaction['type'] == 'loan':
+                    loanAmount += transaction['amount']
+        return loanAmount
+
+    def toggleLoanFeature(self, enable):
+        pass
+
+
+# dbbl = Bank('dbbl')
+shufol = Users('shufol', 'shhufol@islam.com', 'tangail', 'normal')
+shufol.deposit(5000)
+shufol.withdraw(5001)
+shufol.availableBalance()
+shufol.loanFromBank(1000)
+
+admin = Admin()
+admin.createAccount('admin', 'admin@admin.com', 'dhaka')
+admin.showAllUsersAccountList()
+# admin.checkTotalAvailableBalanceInBank()
+admin.totalLoanAmountFromBank()
+# currentUser = admin
+
+
+# while True:
